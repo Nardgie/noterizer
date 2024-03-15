@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Nardgie/noterizer/issues"
   },
-  "homepage": "https://github.com/Nardgie/noterizer#readme"
+  "homepage": "https://github.com/Nardgie/noterizer#readme",
+  "dependencies": {
+    "express": "^4.18.3",
+    "uuidv4": "^6.2.13"
+  }
 }
