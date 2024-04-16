@@ -136,29 +136,30 @@ const handleRenderBtns = () => {
 // Render the list of note titles
 const renderNoteList = async (notes) => {
   // let jsonNotes = await notes.json();
-  let jsonNotes = notes;
+  let jsonNotes = await notes
+  console.log(jsonNotes);
   if (window.location.pathname === '/notes') {
 
     //CHECK THIS
     noteList.forEach((el) => (el.innerHTML = ''));
   }
 
-  notes.forEach((note) => {
-    const noteEl = createLi(note.title);
-    noteEl.dataset.note = JSON.stringify(note);
-    noteList.appendChild(noteEl);
-  });
+  // notes.forEach((note) => {
+  //   const noteEl = createLi(note.title);
+  //   noteEl.dataset.note = JSON.stringify(note);
+  //   noteList.appendChild(noteEl);
+  // });
 
   if (!Array.isArray(notes)) {
     console.error("Expected array of notes, but got: ", notes);
     return;
   }
 
-  if (notes.length === 0) {
-    const noNotesItem = createLi("No saved Notes", false);
-    noteListElement.appendChild(noNotesItem);
-    return;
-  }
+  // if (notes.length === 0) {
+  //   const noNotesItem = createLi("No saved Notes", false);
+  //   noteListElement.appendChild(noNotesItem);
+  //   return;
+  // }
   let noteListItems = [];
 
   // Returns HTML element with or without a delete button
