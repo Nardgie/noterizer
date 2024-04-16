@@ -28,13 +28,19 @@ const hide = (elem) => {
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
 
+// /notes or /api/notes
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     }
-  });
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to retrieve notes');
+    }
+    return response.json();
+  })
 
 const saveNote = (note) =>
   fetch('/api/notes', {
@@ -129,11 +135,30 @@ const handleRenderBtns = () => {
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
-  let jsonNotes = await notes.json();
+  // let jsonNotes = await notes.json();
+  let jsonNotes = notes;
   if (window.location.pathname === '/notes') {
+
+    //CHECK THIS
     noteList.forEach((el) => (el.innerHTML = ''));
   }
 
+  notes.forEach((note) => {
+    const noteEl = createLi(note.title);
+    noteEl.dataset.note = JSON.stringify(note);
+    noteList.appendChild(noteEl);
+  });
+
+  if (!Array.isArray(notes)) {
+    console.error("Expected array of notes, but got: ", notes);
+    return;
+  }
+
+  if (notes.length === 0) {
+    const noNotesItem = createLi("No saved Notes", false);
+    noteListElement.appendChild(noNotesItem);
+    return;
+  }
   let noteListItems = [];
 
   // Returns HTML element with or without a delete button
@@ -162,6 +187,9 @@ const renderNoteList = async (notes) => {
       liEl.append(delBtnEl);
     }
 
+    // NEW CODE
+    
+
     return liEl;
   };
 
@@ -183,6 +211,8 @@ const renderNoteList = async (notes) => {
 
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
+
+
 
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener('click', handleNoteSave);

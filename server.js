@@ -1,12 +1,14 @@
 const express = require('express');
 const path = require('path');
 // const fs = require('fs');
-const { readFromFile, writeToFile, readAndAppend } = require('./helper/fsUtil');
+// const { readFromFile, writeToFile, readAndAppend } = require('./helper/fsUtil');
 // const notes = require('./db/db.json');
 
-// const api = require("")
+// api routes
+const api = require("./controllers/index.js");
 
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 console.log(uuidv4());
 
 const app = express();
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
+
+app.use('/api', api);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public/index.html"));
@@ -32,46 +36,71 @@ app.get("*", (req, res) => {
 });
 
 // API route to get all notes
-app.get("/api/notes", (req, res) => {
-    console.info(`${req.method} request received for notes`)
+// app.get("/api/notes", (req, res) => {
+//     console.info(`${req.method} request received for notes`)
 
-      readFromFile("./database/db.json").then((data) => res.json(JSON.parse(data)));
+//       readFromFile("./database/db.json")
+//       .then(notes => {
+//         res.json(JSON.parse(notes));
+//     }).catch(err => {
+//         console.error(err);
+//         res.status(500).json({ error: 'An error occurred while fetching notes.' });
+//     });
+//     //   .then((data) => res.json(JSON.parse(data))); 
 
-})
+// })
 
-app.post("/api/notes", (req, res) => {
-    console.info(`${req.method} request received to add a note`);
+// // DELETE Route for a specific tip
+// app.delete('/api/notes/:id', (req, res) => {
+//   const noteId = req.params.id;
+//   readFromFile('./database/db.json')
+//     .then((data) => JSON.parse(data))
+//     .then((json) => {
+//       // Make a new array of all tips except the one with the ID provided in the URL
+//       const result = json.filter((note) => note.id !== noteId);
 
-    const { title, text } = req.body;
+//       // Save that array to the filesystem
+//       writeToFile('./database/db.json', result);
 
-    // if (req.body) {
-        if (title && text) {
-            const newNote = {
-                title,
-                text,
-                note_id: uuidv4()
-            };
+//       // Respond to the DELETE request
+//       res.json(`Item ${noteId} has been deleted 🗑️`);
+//     });
+// });
+
+
+// app.post("/api/notes", (req, res) => {
+//     console.info(`${req.method} request received to add a note`);
+
+//     const { title, text } = req.body;
+
+//     // if (req.body) {
+//         if (title && text) {
+//             const newNote = {
+//                 title,
+//                 text,
+//                 note_id: uuidv4()
+//             };
 
     
-            // const notes = JSON.stringify(newNote);
-                // notes.push(newNote);
+//             // const notes = JSON.stringify(newNote);
+//                 // notes.push(newNote);
 
-            readAndAppend(newNote, './database/db.json');
-                res.json(`Note added successfully`);
+//             readAndAppend(newNote, './database/db.json');
+//                 // res.json(`Note added successfully`);
             
-  
-            const response = {
-                status: 'success',
-                body: newNote,
-                };
+//             console.log(readAndAppend(`${newNote}`, './database/db.json'));
+//             const response = {
+//                 status: 'success',
+//                 body: newNote,
+//                 };
 
-                console.log(response);
-                res.status(201).json(response);
-            } else {
-                res.status(500).json('Error in posting review');
-            }
+//                 console.log(response);
+//                 res.status(201).json(response);
+//             } else {
+//                 res.status(500).json('Error in posting review');
+//             }
             
-        })
+// })
 
 app.listen(PORT, () => {
     console.log(`App listening on PORT: ${PORT}`);
